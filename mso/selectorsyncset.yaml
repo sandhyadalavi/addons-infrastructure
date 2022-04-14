@@ -1,41 +1,46 @@
-apiVersion: hive.openshift.io/v1
-kind: SelectorSyncSet
+apiVersion: v1
+kind: Template
 metadata:
-  name: monitoring-stack-operator
-spec:
-  clusterDeploymentSelector:
-    matchLabels:
-      api.openshift.com/addon-reference-addon: 'true'
-  resourceApplyMode: Sync
-  resources:
-  - apiVersion: v1
-    kind: Namespace
-    metadata:
-      annotations:
-        openshift.io/node-selector: ''
-      name: openshift-monitoring-stack-operator
-  - apiVersion: operators.coreos.com/v1alpha1
-    kind: CatalogSource
-    metadata:
-      name: monitoring-stack-operator-catalog
-      namespace: openshift-monitoring-stack-operator
-    spec:
-      displayName: Red Hat Monitoring Stack Operator
-      image: quay.io/rhobs/monitoring-stack-operator-catalog@sha256:6eb276f83d05f9422c27aaf4d4ca99b863ef090d92316af4bfeb44ec382beda5
-      publisher: OSD Red Hat Addons
-      sourceType: grpc
-  - apiVersion: operators.coreos.com/v1alpha2
-    kind: OperatorGroup
-    metadata:
-      name: monitoring-stack-operator-og
-      namespace: openshift-monitoring-stack-operator
-  - apiVersion: operators.coreos.com/v1alpha1
-    kind: Subscription
+  name: selectorsyncset-template
+objects:
+  - apiVersion: hive.openshift.io/v1
+    kind: SelectorSyncSet
     metadata:
       name: monitoring-stack-operator
-      namespace: openshift-monitoring-stack-operator
     spec:
-      channel: stable
-      name: monitoring-stack-operator
-      source: monitoring-stack-operator-catalog
-      sourceNamespace: openshift-monitoring-stack-operator
+      clusterDeploymentSelector:
+        matchLabels:
+          api.openshift.com/addon-reference-addon: 'true'
+      resourceApplyMode: Sync
+      resources:
+      - apiVersion: v1
+        kind: Namespace
+        metadata:
+          annotations:
+            openshift.io/node-selector: ''
+          name: openshift-monitoring-stack-operator
+      - apiVersion: operators.coreos.com/v1alpha1
+        kind: CatalogSource
+        metadata:
+          name: monitoring-stack-operator-catalog
+          namespace: openshift-monitoring-stack-operator
+        spec:
+          displayName: Red Hat Monitoring Stack Operator
+          image: quay.io/rhobs/monitoring-stack-operator-catalog@sha256:6eb276f83d05f9422c27aaf4d4ca99b863ef090d92316af4bfeb44ec382beda5
+          publisher: OSD Red Hat Addons
+          sourceType: grpc
+      - apiVersion: operators.coreos.com/v1alpha2
+        kind: OperatorGroup
+        metadata:
+          name: monitoring-stack-operator-og
+          namespace: openshift-monitoring-stack-operator
+      - apiVersion: operators.coreos.com/v1alpha1
+        kind: Subscription
+        metadata:
+          name: monitoring-stack-operator
+          namespace: openshift-monitoring-stack-operator
+        spec:
+          channel: stable
+          name: monitoring-stack-operator
+          source: monitoring-stack-operator-catalog
+          sourceNamespace: openshift-monitoring-stack-operator
